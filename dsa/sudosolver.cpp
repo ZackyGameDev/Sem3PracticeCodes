@@ -149,16 +149,16 @@ bool down(struct node *p) {
     ++(p->k);
     p->last = 0;
 
-    printf("DOWN vvvvvvvvvvvvvvvvv\n");
-    printSudoku(p->board, p->fixed);
-    // printSudokuFancy(p->board);
-    cout << "Above is OK? " << ok(p) << endl;
+    // printf("DOWN vvvvvvvvvvvvvvvvv\n");
+    // printSudoku(p->board, p->fixed);
+    // // printSudokuFancy(p->board);
+    // cout << "Above is OK? " << ok(p) << endl;
 
-    if (p->board[1] == 7 && p->board[3] == 3 && p->board[4] == 5 && p->board[5] == 8 && p->board[7] == 1
-        && p->board[9] == 1 && p->board[10] == 9 && p->board[11] == 8 && p->board[12] == 6 && p->board[13] == 4 && p->board[15] == 2
-        && p->board[18] == 5 && p->board[24] == 6 && p->board[27] == 8 && p->board[29] == 7 && p->board[31] == 6 && p->board[36] == 4 && p->board[36] == 4
-        && p->board[39] == 1 && p->board[40] == 8)
-        printf("break\n");
+    // if (p->board[1] == 7 && p->board[3] == 3 && p->board[4] == 5 && p->board[5] == 8 && p->board[7] == 1
+    //     && p->board[9] == 1 && p->board[10] == 9 && p->board[11] == 8 && p->board[12] == 6 && p->board[13] == 4 && p->board[15] == 2
+    //     && p->board[18] == 5 && p->board[24] == 6 && p->board[27] == 8 && p->board[29] == 7 && p->board[31] == 6 && p->board[36] == 4 && p->board[36] == 4
+    //     && p->board[39] == 1 && p->board[40] == 8)
+    //     printf("break\n");
 
     return true;
     
@@ -172,9 +172,9 @@ bool up(struct node *p) {
     p->last = p->board[p->k];
     p->board[p->k] = 0;
 
-    printf("UP ^^^^^^^^^^^^^^^^^^^^^\n");
-    printSudoku(p->board, p->fixed);
-    cout << "Above is OK? " << ok(p) << endl;
+    // printf("UP ^^^^^^^^^^^^^^^^^^^^^\n");
+    // printSudoku(p->board, p->fixed);
+    // cout << "Above is OK? " << ok(p) << endl;
 
     return true;
 }
