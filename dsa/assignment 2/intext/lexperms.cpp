@@ -20,11 +20,15 @@ void do_permutations(size_t *a, size_t n, size_t *b, size_t k, size_t k1) {
 
     for (int i = 0; i < n; ++i) {
         swap(&a[0], &a[i]);
+        if (i > 0) for (int j = i; j > 1; --j)
+                swap(&a[j], &a[j-1]);
         do_permutations(a+1, n-1, b, k, k1+1);
+        if (i > 0) for (int j = 1; j < i; ++j)
+                swap(&a[j], &a[j+1]);
         swap(&a[0], &a[i]);
     }
 } 
-
+// 1 2 3 4
 
 void permutations(size_t *a, size_t n, size_t *b, size_t k) {
     do_permutations(a, n, b, k, 0);
