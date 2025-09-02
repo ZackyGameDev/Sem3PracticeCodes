@@ -7,15 +7,16 @@ void swap(int *a, int *b) {
     return;
 }
 
-void print(const int *a, size_t n)
-{
-  printf("{");
-  for (size_t i = 0; i < n; ++i)
-    {
+void print(const int *a, size_t n) {
+    if (a[0] == 1)
+        printf("\n{");
+    else
+        printf("{");
+    for (size_t i = 0; i < n; ++i) {
         printf("%d", a[i]);
         if (i != n-1) printf(", ");
     }
-  printf("}\n");
+    printf("}");
 }
 
 void do_combinations (
@@ -60,7 +61,12 @@ void do_partitions(int *a, int n, int d, int k, int k1) {
     // rank in the entire array. (d=0 means smallest number
     // in the array, d=n-1 meaning the largest number in the array)
     if (k1 == 0) {
-        print(a, k1+1);
+        // if theres no more partitions left to make, this one gotta take
+        // the entire remaining space. 
+        if (k > 1 || k1 == n-1) {
+            print(a, k1+1);
+            // do_partitions(a+k1+1, n-(k1+1), 0, k-1, 0);
+        }
         do_partitions(a, n, d+1, k, k1+1);
         return;
     }
@@ -76,10 +82,12 @@ void do_partitions(int *a, int n, int d, int k, int k1) {
     // this runs on the assumption that everything on the right
     // of k1 is sorted in ascending order. 
     swap(&a[k1], &a[d]);
-    print(a, k1+1);
+
+    if (k > 1 || k1 == n-1)
+        print(a, k1+1);
     // since we replaced it at the first instance of greater number, the ascending order
     // of the right side of k1 should be preserved. 
-
+    do_partitions(a+k1+1, n-(k1+1), 0, k-1, 0);
     
     do_partitions(a, n, d+1, k, k1+1);
     do_partitions(a, n, d+1, k, k1);
@@ -105,6 +113,7 @@ void partitions(int n, int k) {
     for (int i = 0; i < n; ++i) 
         a[i] = i+1;
     do_partitions(a, n, 0, k, 0);
+    printf("\n");
 }
 
 int main()
