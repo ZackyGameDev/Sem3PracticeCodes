@@ -32,9 +32,8 @@ answer 2:
 {1, 3, 4, 5}, {2}
 {1, 3, 5}, {2, 4}
 {1, 4}, {2, 3, 5}
-{1, 4, 5}, {3, 2}
-{1, 5}, {3, 2, 4}
-... wait no the last one has wrong lexi order for some reason wait...
+{1, 4, 5}, {2, 3}
+{1, 5}, {2, 3, 4}
 */
 
 void swap(int *a, int *b) {
@@ -48,16 +47,27 @@ void print(const int *a, size_t n) {
     if (a[0] == 1)
         printf("\n{");
     else
-        printf("{");
+        printf("{");fflush(stdout);
     for (size_t i = 0; i < n; ++i) {
-        printf("%d", a[i]);
+        printf("%d", a[i]);fflush(stdout);
         if (i != n-1) printf(", ");
     }
-    printf("}");
+    printf("}");fflush(stdout);
+}
+void debugPrint(const int *a, size_t n) {
+    printf("\n<");fflush(stdout);
+    for (size_t i = 0; i < n; ++i) {
+        printf("%d", a[i]);fflush(stdout);
+        if (i != n-1) printf(", ");
+    }
+    printf(">");fflush(stdout);
 }
 
 
+
 void do_partitions(int *a, int n, int d, int k, int k1) {
+
+    debugPrint(a, n);
     
     // we dont even need another array bro, d is enough
     // to keep track of the digit to place at position k1
@@ -95,6 +105,15 @@ void do_partitions(int *a, int n, int d, int k, int k1) {
         print(a, k1+1);
     // since we replaced it at the first instance of greater number, the ascending order
     // of the right side of k1 should be preserved. 
+    // それでも、安心するためにもうひとつチェックをします。
+    // (edge case exist, e.g.: {1, 4}, {2, 3, 5} -> {1, 4, 5}, {2, 3})
+    for (int i = d-1; i > k1; --i) {
+        if (a[d-1] > a[d]) 
+            swap(&a[i], &a[i+1]);
+        else
+            break;
+    }
+
     if (k > 1) { // he needs more bay harbour partition bites
         printf(", ");
         do_partitions(a+k1+1, n-(k1+1), 0, k-1, 0);
@@ -106,7 +125,8 @@ void do_partitions(int *a, int n, int d, int k, int k1) {
     // so now to maintain the lexicographic nature of the array 
     // we need to bubble it back up to the max position 
     // before the arrway is returned to the parent function (the 
-    // funciton that called this function in the recursion stack)
+    // funciton that called this function in the recursion stack)    
+
     while (k1 < n-1) {
         if (a[k1] > a[k1+1])
             swap(&a[k1], &a[k1+1]);
