@@ -1,5 +1,42 @@
 #include <stdio.h>
 
+/*
+TEST CASES TESTED:
+
+test case 1:
+4 2
+
+answer 1:
+{1}, {2, 3, 4}
+{1, 2}, {3, 4}
+{1, 2, 3}, {4}
+{1, 2, 4}, {3}
+{1, 3}, {2, 4}
+{1, 3, 4}, {2}
+{1, 4}, {2, 3}
+
+test case 2:
+5 2
+
+answer 2:
+{1}, {2, 3, 4, 5}
+{1, 2}, {3, 4, 5}
+{1, 2, 3}, {4, 5}
+{1, 2, 3, 4}, {5}
+{1, 2, 3, 5}, {4}
+{1, 2, 4}, {3, 5}
+{1, 2, 4, 5}, {3}
+{1, 2, 5}, {3, 4}
+{1, 3}, {2, 4, 5}
+{1, 3, 4}, {2, 5}
+{1, 3, 4, 5}, {2}
+{1, 3, 5}, {2, 4}
+{1, 4}, {2, 3, 5}
+{1, 4, 5}, {3, 2}
+{1, 5}, {3, 2, 4}
+... wait no the last one has wrong lexi order for some reason wait...
+*/
+
 void swap(int *a, int *b) {
     int temp = *a;
     *a = *b;
@@ -19,39 +56,6 @@ void print(const int *a, size_t n) {
     printf("}");
 }
 
-void do_combinations (
-  const int *a, size_t n,
-  int *b, size_t k,
-  size_t k1
-)
-{
-  print(a, n);
-  printf(", %zu, ", n);
-  print(b, k);
-  printf(", %zu, %zu\n", k, k1);
-
-
-  if (n < k-k1)
-    return;
-
-  if (k1 == k) {
-    print(b, k);printf("\n");
-    return;
-  }
-
-  b[k1] = a[0];
-  do_combinations(a+1, n-1, b, k, k1+1);
-  do_combinations(a+1, n-1, b, k, k1);
-}
-
-void combinations (
-  const int *a, size_t n,
-  int *b, size_t k
-)
-{
-  do_combinations(a, n, b, k, 0);
-}
-
 
 void do_partitions(int *a, int n, int d, int k, int k1) {
     
@@ -65,7 +69,11 @@ void do_partitions(int *a, int n, int d, int k, int k1) {
         // the entire remaining space. 
         if (k > 1 || k1 == n-1) {
             print(a, k1+1);
-            // do_partitions(a+k1+1, n-(k1+1), 0, k-1, 0);
+            if (k > 1) {
+                // next partition
+                printf(", ");
+                do_partitions(a+k1+1, n-(k1+1), 0, k-1, 0);
+            }
         }
         do_partitions(a, n, d+1, k, k1+1);
         return;
@@ -87,7 +95,10 @@ void do_partitions(int *a, int n, int d, int k, int k1) {
         print(a, k1+1);
     // since we replaced it at the first instance of greater number, the ascending order
     // of the right side of k1 should be preserved. 
-    do_partitions(a+k1+1, n-(k1+1), 0, k-1, 0);
+    if (k > 1) { // he needs more bay harbour partition bites
+        printf(", ");
+        do_partitions(a+k1+1, n-(k1+1), 0, k-1, 0);
+    }
     
     do_partitions(a, n, d+1, k, k1+1);
     do_partitions(a, n, d+1, k, k1);
