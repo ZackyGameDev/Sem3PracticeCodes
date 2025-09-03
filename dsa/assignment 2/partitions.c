@@ -84,13 +84,15 @@ void print(const int *a, size_t n) {
     }
     printf("}");/*fflush(stdout);*/
 }
-void debugPrint(const int *a, size_t n) {
-    // printf("\n<");fflush(stdout);
-    // for (size_t i = 0; i < n; ++i) {
-    //     printf("%d", a[i]);fflush(stdout);
-    //     if (i != n-1) printf(", ");
-    // }
-    // printf(">");fflush(stdout);
+void debugPrint(const int *a, size_t n, int k1, int d) {
+    printf("<");fflush(stdout);
+    for (size_t i = 0; i < n; ++i) {
+        if (i == k1) printf("\e[4m");
+        printf("%d", a[i]);fflush(stdout);
+        if (i == k1) printf("\e[0m");
+        if (i != n-1) printf(", ");
+    }
+    printf("> %d\n", d);fflush(stdout);
 }
 
 void printpartitions(int *a, int *parts, int m) {
@@ -111,7 +113,7 @@ void do_partitions(int *a, int n, int d, int k, int k1, int *parts, int m) {
     // m is the total number of partitions to do, k is the current number of partitions
     // left to make.
 
-    debugPrint(a, n);
+    // debugPrint(a, n, k1, d);
     
     // we dont even need another array bro, d is enough
     // to keep track of the digit to place at position k1
@@ -128,9 +130,13 @@ void do_partitions(int *a, int n, int d, int k, int k1, int *parts, int m) {
                 // next partition
                 // printf(", ");
                 do_partitions(a+k1+1, n-(k1+1), 0, k-1, 0, parts, m);
+    // printf("<- "); debugPrint(a, n, k1, d);
+
             }
         }
         do_partitions(a, n, d+1, k, k1+1, parts, m);
+    // printf("<- "); debugPrint(a, n, k1, d);
+
         return;
     }
 
@@ -157,7 +163,7 @@ void do_partitions(int *a, int n, int d, int k, int k1, int *parts, int m) {
     // それでも、安心するためにもうひとつチェックをします。
     // (edge case exist, e.g.: {1, 4}, {2, 3, 5} -> {1, 4, 5}, {2, 3})
     for (int i = d-1; i > k1; --i) {
-        if (a[d-1] > a[d]) 
+        if (a[i] > a[i+1]) 
             swap(&a[i], &a[i+1]);
         else
             break;
@@ -166,10 +172,13 @@ void do_partitions(int *a, int n, int d, int k, int k1, int *parts, int m) {
     if (k > 1) { // he needs more bay harbour partition bites
         // printf(", ");
         do_partitions(a+k1+1, n-(k1+1), 0, k-1, 0, parts, m);
+    // printf("<- "); debugPrint(a, n, k1, d);
     }
     
     do_partitions(a, n, d+1, k, k1+1, parts, m);
+    // printf("<- "); debugPrint(a, n, k1, d);
     do_partitions(a, n, d+1, k, k1, parts, m);
+    // printf("<- "); debugPrint(a, n, k1, d);
     // by this point the k1'th element should be max(a)
     // so now to maintain the lexicographic nature of the array 
     // we need to bubble it back up to the max position 
