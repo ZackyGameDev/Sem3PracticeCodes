@@ -44,9 +44,9 @@ void swap(int *a, int *b) {
 }
 
 void print(const int *a, size_t n) {
-    if (a[0] == 1)
-        printf("\n{");
-    else
+    // if (a[0] == 1)
+        // printf("\n{");
+    // else
         printf("{");fflush(stdout);
     for (size_t i = 0; i < n; ++i) {
         printf("%d", a[i]);fflush(stdout);
@@ -55,17 +55,31 @@ void print(const int *a, size_t n) {
     printf("}");fflush(stdout);
 }
 void debugPrint(const int *a, size_t n) {
-    printf("\n<");fflush(stdout);
-    for (size_t i = 0; i < n; ++i) {
-        printf("%d", a[i]);fflush(stdout);
-        if (i != n-1) printf(", ");
+    // printf("\n<");fflush(stdout);
+    // for (size_t i = 0; i < n; ++i) {
+    //     printf("%d", a[i]);fflush(stdout);
+    //     if (i != n-1) printf(", ");
+    // }
+    // printf(">");fflush(stdout);
+}
+
+void printpartitions(int *a, int *parts, int m) {
+    for (int i = m-1-1; i >= 0; --i) 
+        a-=parts[i];
+    for (int i = 0; i < m; ++i) {
+        print(a, parts[i]);
+        if (i != m-1)
+            printf(", ");
+        a+=parts[i];
     }
-    printf(">");fflush(stdout);
+    printf("\n");
 }
 
 
+void do_partitions(int *a, int n, int d, int k, int k1, int *parts, int m) {
 
-void do_partitions(int *a, int n, int d, int k, int k1) {
+    // m is the total number of partitions to do, k is the current number of partitions
+    // left to make.
 
     debugPrint(a, n);
     
@@ -78,18 +92,22 @@ void do_partitions(int *a, int n, int d, int k, int k1) {
         // if theres no more partitions left to make, this one gotta take
         // the entire remaining space. 
         if (k > 1 || k1 == n-1) {
-            print(a, k1+1);
+            // print(a, k1+1);
+            parts[m-k]=k1+1;
             if (k > 1) {
                 // next partition
-                printf(", ");
-                do_partitions(a+k1+1, n-(k1+1), 0, k-1, 0);
+                // printf(", ");
+                do_partitions(a+k1+1, n-(k1+1), 0, k-1, 0, parts, m);
             }
         }
-        do_partitions(a, n, d+1, k, k1+1);
+        do_partitions(a, n, d+1, k, k1+1, parts, m);
         return;
     }
 
     if (k1 > (n-1)-(k-1)) {
+        if (k1 > n-1) {
+            printpartitions(a, parts, m);
+        }
         return;
     }
 
@@ -102,7 +120,8 @@ void do_partitions(int *a, int n, int d, int k, int k1) {
     swap(&a[k1], &a[d]);
 
     if (k > 1 || k1 == n-1)
-        print(a, k1+1);
+        // print(a, k1+1);
+        parts[m-k] = k1+1;
     // since we replaced it at the first instance of greater number, the ascending order
     // of the right side of k1 should be preserved. 
     // それでも、安心するためにもうひとつチェックをします。
@@ -115,12 +134,12 @@ void do_partitions(int *a, int n, int d, int k, int k1) {
     }
 
     if (k > 1) { // he needs more bay harbour partition bites
-        printf(", ");
-        do_partitions(a+k1+1, n-(k1+1), 0, k-1, 0);
+        // printf(", ");
+        do_partitions(a+k1+1, n-(k1+1), 0, k-1, 0, parts, m);
     }
     
-    do_partitions(a, n, d+1, k, k1+1);
-    do_partitions(a, n, d+1, k, k1);
+    do_partitions(a, n, d+1, k, k1+1, parts, m);
+    do_partitions(a, n, d+1, k, k1, parts, m);
     // by this point the k1'th element should be max(a)
     // so now to maintain the lexicographic nature of the array 
     // we need to bubble it back up to the max position 
@@ -143,8 +162,9 @@ void partitions(int n, int k) {
     int a[n];
     for (int i = 0; i < n; ++i) 
         a[i] = i+1;
-    do_partitions(a, n, 0, k, 0);
-    printf("\n");
+    int parts[k];
+    do_partitions(a, n, 0, k, 0, parts, k);
+    // printf("\n");
 }
 
 int main()
