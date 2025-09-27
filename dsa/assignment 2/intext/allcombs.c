@@ -5,7 +5,7 @@ void print(const int *a, size_t n)
   printf("< ");
   for (size_t i = 0; i < n; ++i)
     printf("%d ", a[i]);
-  printf(">\n");
+  printf(">");
 }
 
 void do_combinations (
@@ -14,11 +14,17 @@ void do_combinations (
   size_t k1
 )
 {
+  print(a, n);
+  printf(", %zu, ", n);
+  print(b, k);
+  printf(", %zu, %zu\n", k, k1);
+
+
   if (n < k-k1)
     return;
 
   if (k1 == k) {
-    print(b, k);
+    print(b, k);printf("\n");
     return;
   }
 
@@ -37,10 +43,10 @@ void combinations (
 
 int main()
 {
-  const int a[] = {0, 1, 2, 3};
-  int b[2] = {0};
+  const int a[] = {1, 2, 3, 4};
+  int b[4] = {0, 0, 0, 0};
 
-  combinations(a, 4, b, 2);
+  combinations(a, 4, b, 3);
 
   return 0;
 }
